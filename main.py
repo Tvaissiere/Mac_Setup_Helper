@@ -55,17 +55,21 @@ def brew_options_select(stdscr, question, options):
             return [options[i] for i in selected_items]
         stdscr.refresh()
 
-
 def run_brew_options_select(question, options):
     return curses.wrapper(brew_options_select, question, options)
 
-def main(brew_install):
+def main(brew_install, brew_instal_cask):
     homebrew_installed = (run_menu("Do you have Homebrew already installed?", ["Yes I do", "No I don't", "I don't know"]))
     if homebrew_installed == 0:
         selection = []
         selection = (run_brew_options_select("Please select which command line applications and languages you wish to install (space to select), when done press enter", brew_install))
         for i in range(len(selection)):
             subprocess.run("brew install " + selection[i], shell=True, check=True)
+        selection = []
+        # FIXME: Currently when the list is longer than terminal window it will throw an error, so has to be run in full screen terminal
+        selection = (run_brew_options_select("Please select which gui applications and languages you wish to install (space to select), when done press enter", brew_install_cask))
+        for i in range(len(selection)):
+            subprocess.run("brew install --cask " + selection[i], shell=True, check=True)
     elif homebrew_installed == 1:
         subprocess.run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', shell=True, check=True)
     else:
@@ -80,4 +84,4 @@ def main(brew_install):
             else:
                 print("Sorry, this script requires Homebrew")
 
-main(brew_install)
+main(brew_install, brew_install_cask)
