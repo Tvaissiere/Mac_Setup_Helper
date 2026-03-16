@@ -1,0 +1,1 @@
+Basic script to automate some of the Macbook setup using homebrew.
